@@ -1,0 +1,192 @@
+﻿<Page
+    x:Class="AccessibilityExample.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AccessibilityExample"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="GridBackgroundStyle" Color="White"/>
+    </UserControl.Resources>
+    <Grid x:Name="LayoutRoot" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="{Binding Path=CurrentTheme, Mode=OneWay}"
+          d:DataContext="{d:DesignInstance Type=local:ViewModel, IsDesignTimeCreatable=True}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Button Grid.Row="0" Content="Change Theme" Click="ChangeThemeOnClick"></Button>
+        <Grid Grid.Row="1" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource GridBackgroundStyle}">
+            <Grid.Resources>
+                <Style x:Name="GreenStackPanelStyle" TargetType="StackPanel">
+                    <Setter Property="Background" Value="Green"/>
+                </Style>
+                <Style x:Name="GreenBlockStyle" BasedOn="{StaticResource SubheaderTextBlockStyle}" TargetType="TextBlock">
+                    <Setter Property="Foreground" Value="LightGreen"/>
+                    <Setter Property="SelectionHighlightColor" Value="Green"/>
+                    <Setter Property="IsTextSelectionEnabled" Value="True"/>
+                </Style>
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="10"></ColumnDefinition>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Non-Accessible" Style="{StaticResource SubheaderTextBlockStyle}"/>
+            <StackPanel Grid.Row="0" Grid.Column="2" Style="{StaticResource GreenStackPanelStyle}">
+                <TextBlock Text="Here is some text that you can highlight, perhaps to copy." Margin="10" Style="{StaticResource GreenBlockStyle}"></TextBlock>
+            </StackPanel>   
+            <Grid Grid.Row="1" Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Style="{StaticResource SubheaderTextBlockStyle}" Text="Name:" Margin="5"/>
+                <TextBlock Grid.Column="0" Grid.Row="1" Style="{StaticResource SubheaderTextBlockStyle}" Text="Age:" Margin="5"/>
+                <TextBox Grid.Row="0" x:Name="NameBox" Grid.Column="1" Margin="5"/>
+                <TextBlock x:Name="NameError" Text="Name is Required." Style="{StaticResource SubheaderTextBlockStyle}" Margin="5" Foreground="Red" Grid.Row="0" Grid.Column="2"/>
+                <TextBox Grid.Row="1" x:Name="AgeBox" Grid.Column="1" Margin="5"/>
+                <TextBlock x:Name="AgeError" Text="Age Must be Numeric Between 2 and 199." Style="{StaticResource SubheaderTextBlockStyle}" Foreground="Red" Grid.Row="1" Margin="5" Grid.Column="2"/>
+                <StackPanel Grid.Column="0" Grid.Row="2" Orientation="Vertical" Background="Black">
+                    <Image PointerPressed="ImageOnPointerPressed" Source="ms-appx:///Assets/Logo.png" Margin="5"/>
+                    <TextBlock Text="Example App" Foreground="White" Margin="10 -25 0 0"/>
+                </StackPanel>
+                <StackPanel Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" Orientation="Vertical" VerticalAlignment="Top">
+                    <ComboBox HorizontalAlignment="Center" VerticalAlignment="Top" 
+                          ItemsSource="{Binding Path=Items}"
+                          DisplayMemberPath="Description"
+                          SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}"/>
+                    <TextBlock Text="{Binding CurrentItem.Description}" Style="{StaticResource SubheaderTextBlockStyle}"/>
+                </StackPanel>
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Grid.Column="2">
+                    <Button Content="Reset" Click="NonAccessibleResetOnClick"></Button>
+                    <Button Content="Submit" Click="NonAccessibleSubmitOnClick"></Button>
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="2" Margin="5" HorizontalAlignment="Stretch" 
+              KeyUp="AccessibleGridOnKeyUp"
+              KeyDown="AccessibleGridOnKeyDown"
+              VerticalAlignment="Stretch" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <Grid.Resources>
+                <ResourceDictionary>
+                    <ResourceDictionary.ThemeDictionaries>
+                    <!-- When not in high contrast mode, use a colorful look. 
+                                    Note that this is defining an implicit style that is scoped to this StackPanel. -->
+
+                        <ResourceDictionary x:Key="Default">
+                            <Style x:Key="GreenStackPanelAccessibleStyle" TargetType="StackPanel">
+                                <Setter Property="Background" Value="Green"/>
+                            </Style>
+                            <Style x:Key="GreenBlockAccessibleStyle" BasedOn="{StaticResource SubheaderTextBlockStyle}" TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="LightGreen"/>
+                                <Setter Property="SelectionHighlightColor" Value="Green"/>
+                                <Setter Property="IsTextSelectionEnabled" Value="True"/>
+                            </Style>
+                        </ResourceDictionary>
+
+                        <ResourceDictionary x:Key="HighContrastBlack">
+                            <Style x:Key="GreenStackPanelAccessibleStyle" TargetType="StackPanel"/>
+                            <Style x:Key="GreenBlockAccessibleStyle" BasedOn="{StaticResource SubheaderTextBlockStyle}" TargetType="TextBlock"/>
+                        </ResourceDictionary>
+                    
+                        <ResourceDictionary x:Key="HighContrastWhite">
+                            <Style x:Key="GreenStackPanelAccessibleStyle" TargetType="StackPanel"/>
+                            <Style x:Key="GreenBlockAccessibleStyle" BasedOn="{StaticResource SubheaderTextBlockStyle}" TargetType="TextBlock"/>
+                        </ResourceDictionary>
+
+                        <ResourceDictionary x:Key="HighContrastCustom">
+                            <Style x:Key="GreenStackPanelAccessibleStyle" TargetType="StackPanel"/>
+                            <Style x:Key="GreenBlockAccessibleStyle" BasedOn="{StaticResource SubheaderTextBlockStyle}" TargetType="TextBlock"/>
+                        </ResourceDictionary>
+
+                    </ResourceDictionary.ThemeDictionaries>
+                </ResourceDictionary>                
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="10"></ColumnDefinition>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Accessible" Style="{StaticResource SubheaderTextBlockStyle}"/>
+            <StackPanel Grid.Row="0" Grid.Column="2" Style="{ThemeResource GreenStackPanelAccessibleStyle}">
+                <TextBlock Text="Here is some text that you can highlight, perhaps to copy." Margin="10" Style="{ThemeResource GreenBlockAccessibleStyle}"/>
+            </StackPanel>
+            <Grid Grid.Row="1" Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="NameLabel" Grid.Row="0" Style="{StaticResource SubheaderTextBlockStyle}" Text="Name:" Margin="10"/>
+                <TextBlock x:Name="AgeLabel" Grid.Column="0" Grid.Row="1" Style="{StaticResource SubheaderTextBlockStyle}" Text="Age:" Margin="10"/>
+                <TextBox TabIndex="1000" Grid.Row="0" x:Name="AccessibleNameBox" 
+                         AutomationProperties.AutomationId="NameTextBox"
+                         Grid.Column="1" Margin="10" AutomationProperties.LabeledBy="{Binding ElementName=NameLabel}" AutomationProperties.IsRequiredForForm="True"/>
+                <TextBlock x:Name="AccessibleNameError" 
+                           AutomationProperties.AutomationId="NameError"
+                           AutomationProperties.LiveSetting="Assertive"
+                           Text="Name is Required." Style="{StaticResource SubheaderTextBlockStyle}" Margin="10" Foreground="Red" Grid.Row="0" Grid.Column="2"/>
+                <TextBox TabIndex="2000" Grid.Row="1" 
+                         AutomationProperties.AutomationId="AgeTextBox"
+                         x:Name="AccessibleAgeBox" Grid.Column="1" Margin="10" AutomationProperties.LabeledBy="{Binding ElementName=AgeLabel}" AutomationProperties.IsRequiredForForm="True"/>
+                <TextBlock x:Name="AccessibleAgeError" 
+                           AutomationProperties.AutomationId="AgeError"
+                           AutomationProperties.LiveSetting="Assertive"
+                           Text="Age Must be Numeric Between 2 and 199." Style="{StaticResource SubheaderTextBlockStyle}" Foreground="Red" Grid.Row="1" Margin="10" Grid.Column="2"/>
+                <Button TabIndex="2500" Grid.Column="0" Grid.Row="2" Click="AccessibleImageButtonOnClick" 
+                        AutomationProperties.AutomationId="ButtonWithImage"
+                        AutomationProperties.LabeledBy="{Binding ElementName=ExampleAppCaption}">
+                    <StackPanel Orientation="Vertical" Background="Black">
+                        <Image Source="ms-appx:///Assets/Logo.png" Margin="10" AutomationProperties.LabeledBy="{Binding ElementName=ExampleAppCaption}" AutomationProperties.HelpText="An image of the book cover."/>
+                        <TextBlock Text="Example App" x:Name="ExampleAppCaption" Foreground="White" Margin="10 -25 0 0"/>
+                    </StackPanel>
+                </Button>
+                <StackPanel Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" Orientation="Vertical" VerticalAlignment="Top">
+                    <local:AccessibleItemComboBox 
+                        TabIndex="2750"
+                        AutomationProperties.AutomationId="ComboBoxForItems"
+                        AutomationProperties.Name="Selection of Items"
+                        HorizontalAlignment="Center" VerticalAlignment="Top" 
+                          ItemsSource="{Binding Path=Items}"
+                          SelectedItem="{Binding Path=CurrentItem2, Mode=TwoWay}">
+                        <local:AccessibleItemComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Description}"/>
+                            </DataTemplate>
+                        </local:AccessibleItemComboBox.ItemTemplate>
+                    </local:AccessibleItemComboBox>
+                    <TextBlock x:Name="DynamicTextBlock" Text="{Binding CurrentItem2.Description}" Style="{StaticResource SubheaderTextBlockStyle}" AutomationProperties.LiveSetting="Assertive"/>
+                </StackPanel>
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Grid.Column="2">
+                    <Button TabIndex="4000" Content="Reset" Click="AccessibleResetOnClick"
+                            AutomationProperties.AutomationId="ButtonRest"
+                            AutomationProperties.AcceleratorKey="Control R"></Button>
+                    <Button TabIndex="3000" Content="Submit" Click="AccessibleSubmitOnClick"
+                            AutomationProperties.AutomationId="ButtonSubmit"
+                            AutomationProperties.AcceleratorKey="Control S"></Button>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</Page>

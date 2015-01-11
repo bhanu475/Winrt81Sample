@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
+  <Identity Name="19329DotNetGator.WinRTByExampleBookChapter19Exampl" Publisher="CN=E7F9FBA6-4B33-4771-91D2-5CE6B9074FC6" Version="1.1.0.5" />
+  <Properties>
+    <DisplayName>WinRT By Example Book Chapter 19 Example</DisplayName>
+    <PublisherDisplayName>DotNetGator</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+  <Prerequisites>
+    <OSMinVersion>6.3.0</OSMinVersion>
+    <OSMaxVersionTested>6.3.0</OSMaxVersionTested>
+  </Prerequisites>
+  <Resources>
+    <Resource Language="x-generate" />
+  </Resources>
+  <Applications>
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="PackageAndDeployExample.App">
+      <m2:VisualElements DisplayName="WinRT By Example Book Chapter 19 Example" Square150x150Logo="Assets\Logo.png" Square30x30Logo="Assets\SmallLogo.png" Description="Example that illustrates working with packaging and deployment features of Windows Store Apps" ForegroundText="light" BackgroundColor="#464646">
+        <m2:DefaultTile ShortName="19 - Packaging and Deployment Example">
+          <m2:ShowNameOnTiles>
+            <m2:ShowOn Tile="square150x150Logo" />
+          </m2:ShowNameOnTiles>
+        </m2:DefaultTile>
+        <m2:SplashScreen Image="Assets\SplashScreen.png" />
+        <m2:InitialRotationPreference>
+          <m2:Rotation Preference="landscape" />
+        </m2:InitialRotationPreference>
+        <m2:ApplicationView MinWidth="width500" />
+      </m2:VisualElements>
+    </Application>
+  </Applications>
+  <Capabilities>
+    <Capability Name="internetClient" />
+  </Capabilities>
+</Package>
